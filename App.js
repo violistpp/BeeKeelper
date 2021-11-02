@@ -1,92 +1,58 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React, {useState} from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  TouchableOpacity,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import { RNCamera } from 'react-native-camera';
-
-import QRCodeScanner from 'react-native-qrcode-scanner';
-
-onSuccess = (e) => {
-  console.log(e);
-}
+import {View, FlatList, StyleSheet, Alert} from 'react-native';
+import Header from './src/containers/Header';
+import ListItem from './src/containers/ListItem';
+import AddItem from './src/containers/AddItem';
+import {v4 as uuidv4} from 'uuid';
 
 const App = () => {
+  const [inputText, setInputText] = useState('');
+  const [items, setItems] = useState([
+    {id: uuidv4(), title: 'new Project'},
+    {id: uuidv4(), title: 'new Project 002'},
+    {id: uuidv4(), title: 'new Project 003'},
+    {id: uuidv4(), title: 'new Project 004'},
+  ]);
+
+  const deleteItem = id => {
+    setItems(prevItems => {
+      return prevItems.filter(item => item.id !== id);
+    });
+  };
+
+  const addItem = title => {
+    if (!title) {
+      Alert.alert('Error', 'please enter an item');
+    } else {
+      setInputText('');
+      setItems(prevItems => {
+        return [{id: uuidv4(), title}, ...prevItems];
+      });
+    }
+  };
 
   return (
-    <QRCodeScanner
-      onRead={this.onSuccess}
-      topContent={
-        <Text style={styles.centerText}>
-          Scan the QR code.
-        </Text>
-      }
-      bottomContent={
-        <TouchableOpacity style={styles.buttonTouchable}>
-          <Text style={styles.buttonText}>OK. Got it!</Text>
-        </TouchableOpacity>
-      }
-    />
+    <View style={styles.container}>
+      <Header title="Home" />
+      <AddItem
+        addItem={addItem}
+        inputText={inputText}
+        setInputText={setInputText}
+      />
+      <FlatList
+        data={items}
+        renderItem={({item}) => (
+          <ListItem item={item} deleteItem={deleteItem} />
+        )}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  centerText: {
+  container: {
     flex: 1,
-    fontSize: 18,
-    padding: 32,
-    color: '#777'
   },
-  textBold: {
-    fontWeight: '500',
-    color: '#000'
-  },
-  buttonText: {
-    fontSize: 21,
-    color: 'rgb(0,122,255)'
-  },
-  buttonTouchable: {
-    padding: 16
-  }
 });
 
 export default App;
