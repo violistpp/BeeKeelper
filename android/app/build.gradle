@@ -168,7 +168,11 @@ android {
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
+            // matchingFallbacks = ['release', 'debug']
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+        mySpecialRelease {
+          matchingFallbacks = ['release', 'debug']
         }
     }
 
@@ -193,6 +197,8 @@ dependencies {
     implementation project(':react-native-camera')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    implementation 'com.android.support:appcompat-v7:26.0.1'
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
